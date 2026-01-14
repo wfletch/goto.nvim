@@ -8,19 +8,23 @@ local function find_path_at_cursor(line, col)
     local best
     local best_dist = math.huge
 
-    for s, e in line:gmatch("()(" .. PATH_PATTERN .. ")()") do
+    for s, path, e in line:gmatch("()(" .. PATH_PATTERN .. ")()") do
         local start_col = s - 1
         local end_col = e - 2
 
-        -- Cursor inside the match OR nearest match
+        -- Cursor inside the match
         if col >= start_col and col <= end_col then
-            return line:sub(s, e - 1)
+            return path
         end
 
-        local dist = math.min(math.abs(col - start_col), math.abs(col - end_col))
+        local dist = math.min(
+            math.abs(col - start_col),
+            math.abs(col - end_col)
+        )
+
         if dist < best_dist then
             best_dist = dist
-            best = line:sub(s, e - 1)
+            best = path
         end
     end
 
